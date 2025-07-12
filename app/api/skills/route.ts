@@ -1,67 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server';
-import {
-  combineMiddleware,
-  withAuth,
-  withErrorHandling,
-  validateRequestBody,
-} from '@/lib/middleware';
-import { createSkillSchema, skillSearchSchema } from '@/schemas/validation';
-import { SkillRepository } from '@/lib/repositories/skill.repository';
+import { NextResponse } from "next/server"
 
-async function getSkillsHandler(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+// This is a placeholder for your database interaction.
+// In a real application, you would connect to your database here (e.g., Supabase, Neon).
 
-  const queryData = skillSearchSchema.parse(Object.fromEntries(searchParams));
-
-  const result = await SkillRepository.search(
-    queryData.query,
-    queryData.category,
-    queryData.difficultyLevel,
-    queryData.page,
-    queryData.limit
-  );
-
-  return NextResponse.json(
-    {
-      message: 'Skills retrieved successfully',
-      skills: result.skills,
-      pagination: {
-        page: queryData.page,
-        limit: queryData.limit,
-        total: result.total,
-        totalPages: Math.ceil(result.total / queryData.limit),
-      },
-    },
-    { status: 200 }
-  );
+export async function GET(request: Request) {
+  // Simulate fetching skills from a database
+  const skills = [
+    { id: "s1", name: "React", category: "Frontend" },
+    { id: "s2", name: "Node.js", category: "Backend" },
+    { id: "s3", name: "Python", category: "Programming" },
+  ]
+  return NextResponse.json(skills)
 }
 
-async function createSkillHandler(req: NextRequest, skillData: any) {
-  // Check if skill already exists
-  const existingSkill = await SkillRepository.findByName(skillData.name);
+export async function POST(request: Request) {
+  const { name, category } = await request.json()
 
-  if (existingSkill) {
-    return NextResponse.json(
-      { error: 'Skill already exists', message: 'A skill with this name already exists' },
-      { status: 409 }
-    );
+  if (!name || !category) {
+    return NextResponse.json({ error: "Name and category are required" }, { status: 400 })
   }
 
-  const skill = await SkillRepository.create(skillData);
+  // Simulate adding a new skill to a database
+  const newSkill = { id: `s${Date.now()}`, name, category }
+  console.log("New skill added (simulated):", newSkill)
 
-  return NextResponse.json(
-    {
-      message: 'Skill created successfully',
-      skill,
-    },
-    { status: 201 }
-  );
+  return NextResponse.json(newSkill, { status: 201 })
 }
-
-export const GET = combineMiddleware(withErrorHandling)(getSkillsHandler);
-
-export const POST = combineMiddleware(
-  withErrorHandling,
-  withAuth,
-  validateRequestBody(createSkillSchema)
-)(createSkillHandler);
