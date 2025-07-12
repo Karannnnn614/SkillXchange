@@ -208,8 +208,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 📞 Contact & Support
 
 - **Team Lead:** Karan - [karan@skillxchange.com](mailto:karanmundre73@gmail.com)
-- **Project Repository:** [GitHub](https://github.com/yourusername/skillxchange)
-- **Live Demo:** [skillxchange.vercel.app](https://skillxchange.vercel.app)
+- **Project Repository:** [GitHub](https://github.com/Karannnnn614/SkillXchange)
 
 ---
 
