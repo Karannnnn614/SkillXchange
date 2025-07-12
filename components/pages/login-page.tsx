@@ -1,14 +1,117 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useAppContext } from "@/contexts/app-context"
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
+import { useAppContext } from '@/contexts/app-context';
+import { useToast } from '@/hooks/use-toast';
+import { Crown, User, Shield } from 'lucide-react';
 
 export function LoginPage() {
-  const { setIsLoggedIn, setCurrentScreen } = useAppContext()
+  const router = useRouter();
+  const { setIsLoggedIn, setCurrentScreen, setCurrentUser } = useAppContext();
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleDemoLogin = async (email: string, password: string, userType: string) => {
+    console.log('Demo login attempt:', userType, email);
+    setLoading(true);
+    try {
+      const response = await fetch('/api/auth/test-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      console.log('API Response status:', response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Login successful, user:', data.user);
+        setCurrentUser(data.user);
+        setIsLoggedIn(true);
+
+        // Navigate based on user role using Next.js router
+        if (data.user.role === 'admin') {
+          console.log('Navigating to admin...');
+          router.push('/admin');
+        } else {
+          console.log('Navigating to dashboard...');
+          router.push('/dashboard');
+        }
+
+        toast({
+          title: 'Success!',
+          description: `Logged in as demo ${userType}`,
+        });
+      } else {
+        const errorData = await response.json();
+        console.error('Login failed:', errorData);
+        throw new Error(errorData.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Demo login error:', error);
+      toast({
+        title: 'Error',
+        description: 'Demo login failed. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleManualLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    setLoading(true);
+    try {
+      const response = await fetch('/api/auth/test-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentUser(data.user);
+        setIsLoggedIn(true);
+
+        if (data.user.role === 'admin') {
+          router.push('/admin');
+        } else {
+          router.push('/dashboard');
+        }
+
+        toast({
+          title: 'Success!',
+          description: 'Logged in successfully',
+        });
+      } else {
+        throw new Error('Invalid credentials');
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Invalid email or password',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -26,14 +129,7 @@ export function LoginPage() {
               </TabsList>
 
               <TabsContent value="login">
-                <form
-                  className="space-y-6"
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    setIsLoggedIn(true)
-                    setCurrentScreen("home")
-                  }}
-                >
+                <form className="space-y-6" onSubmit={handleManualLogin}>
                   <div>
                     <Label htmlFor="email">Email</Label>
                     <Input
@@ -60,8 +156,9 @@ export function LoginPage() {
                     <Button
                       type="submit"
                       className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                      disabled={loading}
                     >
-                      Sign In
+                      {loading ? 'Signing In...' : 'Sign In'}
                     </Button>
                   </div>
                   <div className="text-center">
@@ -70,15 +167,39 @@ export function LoginPage() {
                     </a>
                   </div>
                 </form>
+
+                <Separator className="my-4" />
+                <div className="flex gap-4">
+                  <Button
+                    type="button"
+                    onClick={() => handleDemoLogin('admin@skillxchange.com', 'admin123', 'admin')}
+                    className="flex-1"
+                    variant="outline"
+                    disabled={loading}
+                  >
+                    <Shield className="mr-2 h-5 w-5" />
+                    {loading ? 'Loading...' : 'Demo Admin'}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => handleDemoLogin('emily.watson@email.com', 'user123', 'user')}
+                    className="flex-1"
+                    variant="outline"
+                    disabled={loading}
+                  >
+                    <User className="mr-2 h-5 w-5" />
+                    {loading ? 'Loading...' : 'Demo User'}
+                  </Button>
+                </div>
               </TabsContent>
 
               <TabsContent value="signup">
                 <form
                   className="space-y-6"
                   onSubmit={(e) => {
-                    e.preventDefault()
-                    setIsLoggedIn(true)
-                    setCurrentScreen("profile")
+                    e.preventDefault();
+                    setIsLoggedIn(true);
+                    setCurrentScreen('profile');
                   }}
                 >
                   <div>
@@ -129,5 +250,5 @@ export function LoginPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
