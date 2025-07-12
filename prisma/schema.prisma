@@ -1,0 +1,328 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  username      String   @unique
+  passwordHash  String   @map("password_hash")
+  firstName     String   @map("first_name")
+  lastName      String   @map("last_name")
+  bio           String?
+  location      String?
+  avatarUrl     String?  @map("avatar_url")
+  phone         String?
+  isVerified    Boolean  @default(false) @map("is_verified")
+  isActive      Boolean  @default(true) @map("is_active")
+  isPublic      Boolean  @default(true) @map("is_public")
+  lastSeen      DateTime @default(now()) @map("last_seen")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  skillsOffered       UserSkillOffered[]
+  skillsWanted        UserSkillWanted[]
+  swapRequestsMade    SwapRequest[]      @relation("SwapRequestRequester")
+  swapRequestsReceived SwapRequest[]     @relation("SwapRequestProvider")
+  messagesSent        Message[]          @relation("MessageSender")
+  messagesReceived    Message[]          @relation("MessageRecipient")
+  conversationsAsP1   Conversation[]     @relation("ConversationParticipant1")
+  conversationsAsP2   Conversation[]     @relation("ConversationParticipant2")
+  ratingsGiven        Rating[]           @relation("RatingRater")
+  ratingsReceived     Rating[]           @relation("RatingRated")
+  notifications       Notification[]
+  assessmentResults   UserAssessmentResult[]
+  roadmapProgress     UserRoadmapProgress[]
+  roadmapsCreated     SkillRoadmap[]
+  userSessions        UserSession[]
+
+  @@map("users")
+}
+
+model Skill {
+  id             String     @id @default(cuid())
+  name           String     @unique
+  category       String
+  description    String?
+  difficultyLevel SkillLevel? @map("difficulty_level")
+  createdAt      DateTime   @default(now()) @map("created_at")
+
+  // Relations
+  usersOffering    UserSkillOffered[]
+  usersWanting     UserSkillWanted[]
+  swapRequestsOffered SwapRequest[] @relation("SwapRequestOfferedSkill")
+  swapRequestsRequested SwapRequest[] @relation("SwapRequestRequestedSkill")
+  assessments      SkillAssessment[]
+
+  @@map("skills")
+}
+
+model UserSkillOffered {
+  id               String     @id @default(cuid())
+  userId           String     @map("user_id")
+  skillId          String     @map("skill_id")
+  proficiencyLevel SkillLevel @map("proficiency_level")
+  experienceYears  Int        @default(0) @map("experience_years")
+  isVerified       Boolean    @default(false) @map("is_verified")
+  description      String?
+  createdAt        DateTime   @default(now()) @map("created_at")
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@map("user_skills_offered")
+}
+
+model UserSkillWanted {
+  id           String     @id @default(cuid())
+  userId       String     @map("user_id")
+  skillId      String     @map("skill_id")
+  desiredLevel SkillLevel @map("desired_level")
+  priority     Int        @default(1)
+  description  String?
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@map("user_skills_wanted")
+}
+
+model SwapRequest {
+  id                String         @id @default(cuid())
+  requesterId       String         @map("requester_id")
+  providerId        String         @map("provider_id")
+  offeredSkillId    String         @map("offered_skill_id")
+  requestedSkillId  String         @map("requested_skill_id")
+  status            SwapRequestStatus @default(PENDING)
+  message           String?
+  proposedSchedule  Json?          @map("proposed_schedule")
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+  expiresAt         DateTime?      @map("expires_at")
+
+  // Relations
+  requester      User   @relation("SwapRequestRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  provider       User   @relation("SwapRequestProvider", fields: [providerId], references: [id], onDelete: Cascade)
+  offeredSkill   Skill  @relation("SwapRequestOfferedSkill", fields: [offeredSkillId], references: [id])
+  requestedSkill Skill  @relation("SwapRequestRequestedSkill", fields: [requestedSkillId], references: [id])
+  ratings        Rating[]
+
+  @@map("swap_requests")
+}
+
+model Message {
+  id             String      @id @default(cuid())
+  conversationId String      @map("conversation_id")
+  senderId       String      @map("sender_id")
+  recipientId    String      @map("recipient_id")
+  content        String
+  messageType    MessageType @default(TEXT) @map("message_type")
+  isRead         Boolean     @default(false) @map("is_read")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient    User         @relation("MessageRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model Conversation {
+  id             String    @id @default(cuid())
+  participant1Id String    @map("participant_1_id")
+  participant2Id String    @map("participant_2_id")
+  lastMessageId  String?   @map("last_message_id")
+  lastActivity   DateTime  @default(now()) @map("last_activity")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  participant1 User      @relation("ConversationParticipant1", fields: [participant1Id], references: [id], onDelete: Cascade)
+  participant2 User      @relation("ConversationParticipant2", fields: [participant2Id], references: [id], onDelete: Cascade)
+  messages     Message[]
+
+  @@unique([participant1Id, participant2Id])
+  @@map("conversations")
+}
+
+model Rating {
+  id                   String  @id @default(cuid())
+  swapRequestId        String  @map("swap_request_id")
+  raterId              String  @map("rater_id")
+  ratedUserId          String  @map("rated_user_id")
+  rating               Int
+  feedback             String?
+  skillQualityRating   Int?    @map("skill_quality_rating")
+  communicationRating  Int?    @map("communication_rating")
+  reliabilityRating    Int?    @map("reliability_rating")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  // Relations
+  swapRequest SwapRequest @relation(fields: [swapRequestId], references: [id], onDelete: Cascade)
+  rater       User        @relation("RatingRater", fields: [raterId], references: [id], onDelete: Cascade)
+  ratedUser   User        @relation("RatingRated", fields: [ratedUserId], references: [id], onDelete: Cascade)
+
+  @@unique([swapRequestId, raterId])
+  @@map("ratings")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String           @map("user_id")
+  type      NotificationType
+  title     String
+  content   String?
+  data      Json?
+  isRead    Boolean          @default(false) @map("is_read")
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  tokenHash String   @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+model SkillAssessment {
+  id              String     @id @default(cuid())
+  skillId         String     @map("skill_id")
+  title           String
+  description     String?
+  questions       Json
+  passingScore    Int        @map("passing_score")
+  durationMinutes Int        @map("duration_minutes")
+  difficultyLevel SkillLevel @map("difficulty_level")
+  isActive        Boolean    @default(true) @map("is_active")
+  createdAt       DateTime   @default(now()) @map("created_at")
+
+  // Relations
+  skill   Skill                  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  results UserAssessmentResult[]
+
+  @@map("skill_assessments")
+}
+
+model UserAssessmentResult {
+  id               String  @id @default(cuid())
+  userId           String  @map("user_id")
+  assessmentId     String  @map("assessment_id")
+  score            Int
+  totalPossible    Int     @map("total_possible")
+  passed           Boolean
+  answers          Json
+  timeTakenMinutes Int?    @map("time_taken_minutes")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessment SkillAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, assessmentId])
+  @@map("user_assessment_results")
+}
+
+model SkillRoadmap {
+  id                    String     @id @default(cuid())
+  title                 String
+  description           String?
+  category              String
+  difficultyLevel       SkillLevel @map("difficulty_level")
+  estimatedDurationHours Int?      @map("estimated_duration_hours")
+  prerequisites         Json?
+  skills                Json
+  milestones            Json
+  isPublic              Boolean    @default(true) @map("is_public")
+  createdBy             String?    @map("created_by")
+  createdAt             DateTime   @default(now()) @map("created_at")
+  updatedAt             DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  creator  User?                 @relation(fields: [createdBy], references: [id])
+  progress UserRoadmapProgress[]
+
+  @@map("roadmaps")
+}
+
+model UserRoadmapProgress {
+  id                   String   @id @default(cuid())
+  userId               String   @map("user_id")
+  roadmapId            String   @map("roadmap_id")
+  currentMilestone     Int      @default(0) @map("current_milestone")
+  completedMilestones  Json     @default("[]") @map("completed_milestones")
+  progressPercentage   Float    @default(0.0) @map("progress_percentage")
+  startedAt            DateTime @default(now()) @map("started_at")
+  lastUpdated          DateTime @updatedAt @map("last_updated")
+
+  // Relations
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roadmap SkillRoadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roadmapId])
+  @@map("user_roadmap_progress")
+}
+
+// Enums
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+
+  @@map("skill_level")
+}
+
+enum SwapRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  COMPLETED
+  CANCELLED
+
+  @@map("swap_request_status")
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  SYSTEM
+
+  @@map("message_type")
+}
+
+enum NotificationType {
+  SWAP_REQUEST
+  MESSAGE
+  RATING
+  SYSTEM
+  REMINDER
+
+  @@map("notification_type")
+}
