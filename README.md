@@ -16,9 +16,9 @@ A Revolutionary Peer-to-Peer Skill Swap Platform built with Next.js, enabling us
 | Name           | Role                    | GitHub/LinkedIn                |
 |----------------|-------------------------|-------------------------------|
 | **Karan**      | **Team Lead & Full Stack Developer** | [@karan](https://github.com/karan) |
-| **[Member 2]** | Frontend Developer      | [@member2](https://github.com/member2) |
-| **[Member 3]** | Backend Developer       | [@member3](https://github.com/member3) |
-| **[Member 4]** | UI/UX Designer         | [@member4](https://github.com/member4) |
+| **Rhydam Sharma** | Frontend Developer      | [@member2](https://github.com/rhydam1003) |
+| **Aarushi Pathak** | Backend Developer       | [@member3](https://github.com/aarushipathak103) |
+| **Shruti Tiwari** | UI/UX Designer         | [@member4](https://github.com/Shrutitiwari033) |
 
 > **Note:** Please update the team member names and links above with actual information.
 
@@ -192,7 +192,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 📞 Contact & Support
 
-- **Team Lead:** Karan - [karan@skillxchange.com](mailto:karan@skillxchange.com)
+- **Team Lead:** Karan - [karan@skillxchange.com](mailto:karanmundre73@gmail.com)
 - **Project Repository:** [GitHub](https://github.com/yourusername/skillxchange)
 - **Live Demo:** [skillxchange.vercel.app](https://skillxchange.vercel.app)
 
