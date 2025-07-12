@@ -15,10 +15,10 @@ _Building the future of skill sharing and community learning_
 
 | Name               | Role                                 | GitHub/LinkedIn                                 |
 | ------------------ | ------------------------------------ | ----------------------------------------------- |
-| **Karan**          | **Team Lead & Full Stack Developer** | [@karan](https://github.com/karan)              |
-| **Rhydam Sharma**  | Frontend Developer                   | [@member2](https://github.com/rhydam1003)       |
-| **Aarushi Pathak** | Backend Developer                    | [@member3](https://github.com/aarushipathak103) |
-| **Shruti Tiwari**  | UI/UX Designer                       | [@member4](https://github.com/Shrutitiwari033)  |
+| **Karan**          | **Team Lead & Full Stack Developer** | [@github](https://github.com/karan)              |
+| **Rhydam Sharma**  | Frontend Developer                   | [@github](https://github.com/rhydam1003)       |
+| **Aarushi Pathak** | Backend Developer                    | [@github](https://github.com/aarushipathak103) |
+| **Shruti Tiwari**  | UI/UX Designer                       | [@github](https://github.com/Shrutitiwari033)  |
 
 > **Note:** Please update the team member names and links above with actual information.
 
