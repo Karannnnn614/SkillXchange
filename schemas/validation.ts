@@ -53,43 +53,20 @@ export const userSkillWantedSchema = z.object({
 
 // Swap request schemas
 export const createSwapRequestSchema = z.object({
-  providerId: z.string().uuid('Invalid provider ID'),
-  offeredSkillId: z.string().uuid('Invalid offered skill ID'),
-  requestedSkillId: z.string().uuid('Invalid requested skill ID'),
-  message: z.string().max(1000).optional(),
+  providerId: z.string().min(1, 'Provider ID is required'),
+  offeredSkillId: z.string().min(1, 'Offered skill is required'),
+  requestedSkillId: z.string().min(1, 'Requested skill is required'),
+  message: z.string().min(10, 'Message must be at least 10 characters').max(1000),
   proposedSchedule: z
     .object({
-      startDate: z.string().datetime().optional(),
-      endDate: z.string().datetime().optional(),
-      timeSlots: z
-        .array(
-          z.object({
-            day: z.string(),
-            time: z.string(),
-          })
-        )
-        .optional(),
+      days: z.array(z.string()).optional(),
+      timeSlots: z.array(z.string()).optional(),
     })
     .optional(),
 });
 
 export const updateSwapRequestSchema = z.object({
-  status: z.enum(['pending', 'accepted', 'declined', 'completed', 'cancelled']).optional(),
-  message: z.string().max(1000).optional(),
-  proposedSchedule: z
-    .object({
-      startDate: z.string().datetime().optional(),
-      endDate: z.string().datetime().optional(),
-      timeSlots: z
-        .array(
-          z.object({
-            day: z.string(),
-            time: z.string(),
-          })
-        )
-        .optional(),
-    })
-    .optional(),
+  status: z.enum(['pending', 'accepted', 'declined', 'completed', 'cancelled']),
 });
 
 // Message schemas
@@ -101,13 +78,27 @@ export const createMessageSchema = z.object({
 
 // Rating schemas
 export const createRatingSchema = z.object({
-  swapRequestId: z.string().uuid('Invalid swap request ID'),
-  ratedUserId: z.string().uuid('Invalid rated user ID'),
+  swapRequestId: z.string().min(1, 'Swap request ID is required'),
+  ratedUserId: z.string().min(1, 'Rated user ID is required'),
   rating: z.number().min(1).max(5),
   feedback: z.string().max(1000).optional(),
   skillQualityRating: z.number().min(1).max(5).optional(),
   communicationRating: z.number().min(1).max(5).optional(),
   reliabilityRating: z.number().min(1).max(5).optional(),
+});
+
+// Admin schemas
+export const adminUserActionSchema = z.object({
+  action: z.enum(['ban', 'unban', 'verify', 'unverify', 'promote', 'demote']),
+  reason: z.string().min(1, 'Reason is required').max(500),
+  duration: z.number().optional(), // for temporary bans
+});
+
+export const adminContentModerationSchema = z.object({
+  contentType: z.enum(['user', 'message', 'swap_request', 'rating']),
+  contentId: z.string().min(1, 'Content ID is required'),
+  action: z.enum(['delete', 'flag', 'unflag']),
+  reason: z.string().min(1, 'Reason is required').max(500),
 });
 
 // Notification schemas
@@ -206,3 +197,5 @@ export type CreateRoadmap = z.infer<typeof createRoadmapSchema>;
 export type PaginationQuery = z.infer<typeof paginationSchema>;
 export type SkillSearchQuery = z.infer<typeof skillSearchSchema>;
 export type UserSearchQuery = z.infer<typeof userSearchSchema>;
+export type AdminUserAction = z.infer<typeof adminUserActionSchema>;
+export type AdminContentModeration = z.infer<typeof adminContentModerationSchema>;

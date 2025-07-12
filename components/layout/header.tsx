@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Bell,
   Menu,
@@ -29,12 +29,14 @@ import { useAppContext } from '@/contexts/app-context';
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const {
     currentScreen,
     setCurrentScreen,
     isLoggedIn,
     setIsLoggedIn,
     currentUser,
+    setCurrentUser,
     mobileMenuOpen,
     setMobileMenuOpen,
     notifications,
@@ -176,8 +178,30 @@ export function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => {
+                      console.log('Logout clicked');
                       setIsLoggedIn(false);
-                      setCurrentScreen('landing');
+                      setCurrentUser({
+                        id: 'current',
+                        name: 'Your Name',
+                        email: 'you@example.com',
+                        role: 'user',
+                        location: 'Your Location',
+                        avatar: '/placeholder.svg?height=60&width=60',
+                        skillsOffered: ['Graphic Design', 'Video Editing'],
+                        skillsWanted: ['Python', 'JavaScript'],
+                        rating: 4.5,
+                        availability: 'weekends',
+                        isPublic: true,
+                        isOnline: true,
+                        lastSeen: 'now',
+                        bio: 'Creative professional looking to expand into tech',
+                        completedSwaps: 12,
+                        joinedDate: '2023-06-01',
+                        badges: ['New Member'],
+                        isVerified: false,
+                        level: 'beginner',
+                      });
+                      router.push('/auth');
                     }}
                   >
                     <LogOut className="h-4 w-4 mr-2" />
@@ -186,7 +210,7 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={() => setCurrentScreen('login')}>Login</Button>
+              <Button onClick={() => router.push('/auth')}>Login</Button>
             )}
 
             <Button

@@ -12,22 +12,22 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await seedDatabase();
-    
+
     if (result.success) {
       return NextResponse.json({
         message: result.message,
         stats: result.stats,
-        status: 'success'
+        status: 'success',
       });
     } else {
-      return NextResponse.json(
-        { error: result.message, details: result.error },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: result.message, details: result.error }, { status: 500 });
     }
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to seed database', message: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Failed to seed database',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }
@@ -36,15 +36,18 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const verification = await verifySeededData();
-    
+
     return NextResponse.json({
       message: 'Database verification completed',
       data: verification,
-      status: 'success'
+      status: 'success',
     });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to verify database', message: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Failed to verify database',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }

@@ -65,82 +65,95 @@ export async function seedDatabase() {
 
     // Insert users
     for (const user of mockUsers) {
-      const credentials = testUserCredentials.find(cred => cred.email === user.email);
-      const passwordHash = credentials ? 
-        await AuthUtils.hashPassword(credentials.password) : 
-        await AuthUtils.hashPassword('defaultpass123');
+      const credentials = testUserCredentials.find((cred) => cred.email === user.email);
+      const passwordHash = credentials
+        ? await AuthUtils.hashPassword(credentials.password)
+        : await AuthUtils.hashPassword('defaultpass123');
 
-      await pool.query(`
+      await pool.query(
+        `
         INSERT INTO users (
           user_id, name, email, password_hash, role, location, avatar, bio,
           rating, availability, is_public, is_online, is_verified, level,
           completed_swaps, joined_date
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-      `, [
-        user.id,
-        user.name,
-        user.email,
-        passwordHash,
-        user.role,
-        user.location,
-        user.avatar,
-        user.bio,
-        user.rating,
-        user.availability,
-        user.isPublic,
-        user.isOnline,
-        user.isVerified,
-        user.level,
-        user.completedSwaps,
-        new Date(user.joinedDate)
-      ]);
+      `,
+        [
+          user.id,
+          user.name,
+          user.email,
+          passwordHash,
+          user.role,
+          user.location,
+          user.avatar,
+          user.bio,
+          user.rating,
+          user.availability,
+          user.isPublic,
+          user.isOnline,
+          user.isVerified,
+          user.level,
+          user.completedSwaps,
+          new Date(user.joinedDate),
+        ]
+      );
 
       // Insert skills offered
       for (const skill of user.skillsOffered) {
-        await pool.query(`
+        await pool.query(
+          `
           INSERT INTO user_skills (user_id, skill_name, skill_type, proficiency_level)
           VALUES ($1, $2, 'offered', $3)
-        `, [user.id, skill, user.level]);
+        `,
+          [user.id, skill, user.level]
+        );
       }
 
       // Insert skills wanted
       for (const skill of user.skillsWanted) {
-        await pool.query(`
+        await pool.query(
+          `
           INSERT INTO user_skills (user_id, skill_name, skill_type)
           VALUES ($1, $2, 'wanted')
-        `, [user.id, skill]);
+        `,
+          [user.id, skill]
+        );
       }
 
       // Insert badges
       for (const badge of user.badges) {
-        await pool.query(`
+        await pool.query(
+          `
           INSERT INTO user_badges (user_id, badge_name)
           VALUES ($1, $2)
-        `, [user.id, badge]);
+        `,
+          [user.id, badge]
+        );
       }
     }
 
     console.log(`Successfully seeded database with ${mockUsers.length} users`);
-    
+
     // Print summary
-    const adminCount = mockUsers.filter(u => u.role === 'admin').length;
-    const moderatorCount = mockUsers.filter(u => u.role === 'moderator').length;
-    const userCount = mockUsers.filter(u => u.role === 'user').length;
-    
-    console.log(`Seeded users: ${adminCount} admins, ${moderatorCount} moderators, ${userCount} regular users`);
-    
+    const adminCount = mockUsers.filter((u) => u.role === 'admin').length;
+    const moderatorCount = mockUsers.filter((u) => u.role === 'moderator').length;
+    const userCount = mockUsers.filter((u) => u.role === 'user').length;
+
+    console.log(
+      `Seeded users: ${adminCount} admins, ${moderatorCount} moderators, ${userCount} regular users`
+    );
+
     return {
       success: true,
       message: `Database seeded with ${mockUsers.length} users`,
-      stats: { adminCount, moderatorCount, userCount }
+      stats: { adminCount, moderatorCount, userCount },
     };
-
   } catch (error) {
     console.error('Error seeding database:', error);
     return {
       success: false,
       message: 'Failed to seed database',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
@@ -157,10 +170,10 @@ export async function verifySeededData() {
       GROUP BY role, level
       ORDER BY role, level
     `);
-    
+
     console.log('Database verification:');
     console.table(result.rows);
-    
+
     return result.rows;
   } catch (error) {
     console.error('Error verifying data:', error);

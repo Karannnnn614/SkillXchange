@@ -7,29 +7,20 @@ export async function POST(request: NextRequest) {
     const { email, password } = await request.json();
 
     if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
     // Find user in mock data
     const user = getUserByEmail(email);
-    const credentials = testUserCredentials.find(cred => cred.email === email);
+    const credentials = testUserCredentials.find((cred) => cred.email === email);
 
     if (!user || !credentials) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
     // Verify password (for testing, we'll use simple comparison)
     if (password !== credentials.password) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
     // Generate JWT token
@@ -54,6 +45,12 @@ export async function POST(request: NextRequest) {
       badges: user.badges,
       completedSwaps: user.completedSwaps,
       joinedDate: user.joinedDate,
+      skillsOffered: user.skillsOffered || [],
+      skillsWanted: user.skillsWanted || [],
+      availability: user.availability || 'flexible',
+      isPublic: user.isPublic !== undefined ? user.isPublic : true,
+      isOnline: user.isOnline !== undefined ? user.isOnline : true,
+      lastSeen: user.lastSeen || 'now',
     };
 
     // Set HTTP-only cookie for security
@@ -74,27 +71,23 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
 // GET endpoint to list available test users
 export async function GET() {
-  const testUsers = testUserCredentials.map(cred => ({
+  const testUsers = testUserCredentials.map((cred) => ({
     email: cred.email,
     role: cred.role,
-    password: cred.password // In real app, never expose passwords!
+    password: cred.password, // In real app, never expose passwords!
   }));
 
   return NextResponse.json({
     message: 'Available test users for login',
     users: testUsers,
-    note: 'These are test credentials for development only'
+    note: 'These are test credentials for development only',
   });
 }
