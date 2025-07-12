@@ -117,8 +117,8 @@ export function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Welcome back</h2>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your SkillXchange account</p>
+          <h2 className="mt-6 text-3xl font-extrabold text-blue-700">Welcome back</h2>
+          <p className="mt-2 text-sm text-purple-600">Sign in to your SkillXchange account</p>
         </div>
         <Card>
           <CardContent className="p-6">

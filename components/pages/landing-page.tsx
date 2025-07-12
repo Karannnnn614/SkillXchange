@@ -24,7 +24,15 @@ export function LandingPage() {
           aria-hidden="true"
         >
           <defs>
-            <radialGradient id="bg1" cx="50%" cy="50%" r="80%" fx="50%" fy="50%" gradientTransform="rotate(45)">
+            <radialGradient
+              id="bg1"
+              cx="50%"
+              cy="50%"
+              r="80%"
+              fx="50%"
+              fy="50%"
+              gradientTransform="rotate(45)"
+            >
               <stop offset="0%" stopColor="#6366F1" stopOpacity="0.3" />
               <stop offset="100%" stopColor="#A78BFA" stopOpacity="0" />
             </radialGradient>
@@ -33,19 +41,31 @@ export function LandingPage() {
         </svg>
       </div>
       {/* Navbar */}
-      <nav className="w-full max-w-7xl mx-auto flex items-center justify-between py-6 px-4 z-10 relative" aria-label="Main Navigation">
+      <nav
+        className="w-full max-w-7xl mx-auto flex items-center justify-between py-6 px-4 z-10 relative"
+        aria-label="Main Navigation"
+      >
         <div className="flex items-center gap-2">
-          <img src="/placeholder-logo.svg" alt="SkillXchange logo" className="w-10 h-10" />
+          
           <span className="text-2xl font-bold text-white tracking-wide">SkillXchange</span>
         </div>
         <div className="hidden md:flex gap-8 text-white font-medium">
-          <a href="#features" className="hover:text-blue-300 transition focus:outline focus:ring-2 focus:ring-blue-400">
-            Features
+          <a
+            href="/discover"
+            className="hover:text-blue-300 transition focus:outline focus:ring-2 focus:ring-blue-400"
+          >
+            Discover
           </a>
-          <a href="#how" className="hover:text-blue-300 transition focus:outline focus:ring-2 focus:ring-blue-400">
+          <a
+            href="#how"
+            className="hover:text-blue-300 transition focus:outline focus:ring-2 focus:ring-blue-400"
+          >
             How It Works
           </a>
-          <a href="#stats" className="hover:text-blue-300 transition focus:outline focus:ring-2 focus:ring-blue-400">
+          <a
+            href="#stats"
+            className="hover:text-blue-300 transition focus:outline focus:ring-2 focus:ring-blue-400"
+          >
             Stats
           </a>
         </div>
@@ -55,7 +75,7 @@ export function LandingPage() {
           className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 shadow-lg focus:outline focus:ring-2 focus:ring-purple-400"
           onClick={() => {
             setIsLoggedIn(true);
-            setCurrentScreen("home");
+            setCurrentScreen('home');
           }}
         >
           Join Now <ArrowRight className="ml-2 h-5 w-5" />
@@ -67,7 +87,8 @@ export function LandingPage() {
           Unlock Your Potential
         </h1>
         <p className="text-xl md:text-2xl text-blue-100 max-w-2xl mb-8">
-          Connect, learn, and grow by exchanging skills with a vibrant global community. Discover new opportunities, share your expertise, and unlock your future.
+          Connect, learn, and grow by exchanging skills with a vibrant global community. Discover
+          new opportunities, share your expertise, and unlock your future.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
@@ -76,7 +97,7 @@ export function LandingPage() {
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 shadow-xl focus:outline focus:ring-2 focus:ring-purple-400"
             onClick={() => {
               setIsLoggedIn(true);
-              setCurrentScreen("home");
+              setCurrentScreen('home');
             }}
           >
             Get Started <ArrowRight className="ml-2 h-5 w-5" />
@@ -86,7 +107,7 @@ export function LandingPage() {
             type="button"
             variant="outline"
             className="px-8 py-3 bg-white/10 border-white text-white hover:bg-white/20 focus:outline focus:ring-2 focus:ring-blue-400"
-            onClick={() => setCurrentScreen("skills-assessment")}
+            onClick={() => setCurrentScreen('skills-assessment')}
           >
             Explore Roadmaps <Award className="ml-2 h-5 w-5" />
           </Button>
@@ -148,7 +169,10 @@ export function LandingPage() {
         </div>
       </section>
       {/* Stats Section */}
-      <section id="stats" className="py-16 w-full bg-gradient-to-r from-blue-900 via-purple-900 to-black z-10 relative">
+      <section
+        id="stats"
+        className="py-16 w-full bg-gradient-to-r from-blue-900 via-purple-900 to-black z-10 relative"
+      >
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
             <div>
@@ -171,11 +195,16 @@ export function LandingPage() {
         </div>
       </section>
       {/* How It Works */}
-      <section id="how" className="py-20 w-full bg-gradient-to-br from-blue-950 via-purple-950 to-black z-10 relative">
+      <section
+        id="how"
+        className="py-20 w-full bg-gradient-to-br from-blue-950 via-purple-950 to-black z-10 relative"
+      >
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">How It Works</h2>
-            <p className="text-lg text-blue-200">Start your learning journey in three simple steps</p>
+            <p className="text-lg text-blue-200">
+              Start your learning journey in three simple steps
+            </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
@@ -213,7 +242,8 @@ export function LandingPage() {
         <div className="max-w-4xl mx-auto text-center px-4">
           <h2 className="text-4xl font-bold text-white mb-4">Ready to Start Learning?</h2>
           <p className="text-lg text-blue-200 mb-8">
-            Join thousands of learners who are already growing their skills through peer-to-peer exchange.
+            Join thousands of learners who are already growing their skills through peer-to-peer
+            exchange.
           </p>
           <Button
             size="lg"
@@ -221,7 +251,7 @@ export function LandingPage() {
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 shadow-xl focus:outline focus:ring-2 focus:ring-purple-400"
             onClick={() => {
               setIsLoggedIn(true);
-              setCurrentScreen("home");
+              setCurrentScreen('home');
             }}
           >
             Join SkillXchange Today <ArrowRight className="ml-2 h-5 w-5" />

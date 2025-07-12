@@ -1,21 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { mockSkills } from '@/lib/mock-data-enhanced';
 
-/**
- * Handler for getting popular skills - using mock data to avoid Prisma dependency
- */
-export async function GET(req: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const limit = parseInt(searchParams.get('limit') || '10');
-
-    // Use mock data instead of Prisma
-    const skills = mockSkills.slice(0, limit);
+    // Get top 10 skills from mock data
+    const popularSkills = mockSkills ? mockSkills.slice(0, 10) : [];
 
     return NextResponse.json(
       {
         message: 'Popular skills retrieved successfully',
-        skills,
+        skills: popularSkills,
       },
       { status: 200 }
     );

@@ -26,6 +26,10 @@ interface AppContextType {
   selectedUser: UserProfile | null;
   setSelectedUser: (user: UserProfile | null) => void;
 
+  // Users data
+  users: UserProfile[];
+  setUsers: (users: UserProfile[] | ((prev: UserProfile[]) => UserProfile[])) => void;
+
   // Search and filters
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -96,7 +100,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // User management
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
-  
+  const [users, setUsers] = useState<UserProfile[]>(mockUsers);
+
   // Wrapper for setIsLoggedIn with logging
   const setIsLoggedInWithLogging = (value: boolean) => {
     console.log('Setting isLoggedIn:', value);
@@ -158,7 +163,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const [currentUser, setCurrentUser] = useState<UserProfile>(initialCurrentUser);
-  
+
   // Wrapper for setCurrentUser with logging
   const setCurrentUserWithLogging = (user: UserProfile) => {
     console.log('Setting current user:', user);
@@ -267,6 +272,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setCurrentUser: setCurrentUserWithLogging,
     selectedUser,
     setSelectedUser,
+    users,
+    setUsers,
 
     // Search and filters
     searchQuery,

@@ -57,9 +57,12 @@ export function Header() {
             </Link>
           </div>
 
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden md:flex space-x-4">
             <Link href="/discover">
-              <Button variant="ghost" className={pathname === '/discover' ? 'bg-gray-100' : ''}>
+              <Button
+                variant="ghost"
+                className={`px-4 ${pathname === '/discover' ? 'bg-gray-100' : ''}`}
+              >
                 <Users className="h-4 w-4 mr-2" />
                 Discover
               </Button>
@@ -69,13 +72,19 @@ export function Header() {
               Skills Test
             </Button> */}
             <Link href="/requests">
-              <Button variant="ghost" className={pathname === '/requests' ? 'bg-gray-100' : ''}>
+              <Button
+                variant="ghost"
+                className={`px-4 ${pathname === '/requests' ? 'bg-gray-100' : ''}`}
+              >
                 <BookOpen className="h-4 w-4 mr-2" />
                 Requests
               </Button>
             </Link>
             <Link href="/messages">
-              <Button variant="ghost" className={pathname === '/messages' ? 'bg-gray-100' : ''}>
+              <Button
+                variant="ghost"
+                className={`px-4 ${pathname === '/messages' ? 'bg-gray-100' : ''}`}
+              >
                 <MessageCircle className="h-4 w-4 mr-2" />
                 Messages
                 {conversations.reduce((acc, conv) => acc + conv.unreadCount, 0) > 0 && (
@@ -86,7 +95,10 @@ export function Header() {
               </Button>
             </Link>
             <Link href="/roadmaps">
-              <Button variant="ghost" className={pathname === '/roadmaps' ? 'bg-gray-100' : ''}>
+              <Button
+                variant="ghost"
+                className={`px-4 ${pathname === '/roadmaps' ? 'bg-gray-100' : ''}`}
+              >
                 <Target className="h-4 w-4 mr-2" />
                 Roadmaps
               </Button>
@@ -232,7 +244,7 @@ export function Header() {
               variant="ghost"
               className="w-full justify-start"
               onClick={() => {
-                setCurrentScreen('home');
+                router.push('/discover');
                 setMobileMenuOpen(false);
               }}
             >
@@ -243,7 +255,7 @@ export function Header() {
               variant="ghost"
               className="w-full justify-start"
               onClick={() => {
-                setCurrentScreen('skills-assessment');
+                router.push('/skills');
                 setMobileMenuOpen(false);
               }}
             >
@@ -254,7 +266,7 @@ export function Header() {
               variant="ghost"
               className="w-full justify-start"
               onClick={() => {
-                setCurrentScreen('requests');
+                router.push('/requests');
                 setMobileMenuOpen(false);
               }}
             >
@@ -265,7 +277,7 @@ export function Header() {
               variant="ghost"
               className="w-full justify-start"
               onClick={() => {
-                setCurrentScreen('messages');
+                router.push('/messages');
                 setMobileMenuOpen(false);
               }}
             >
@@ -276,7 +288,7 @@ export function Header() {
               variant="ghost"
               className="w-full justify-start"
               onClick={() => {
-                setCurrentScreen('roadmaps');
+                router.push('/roadmaps');
                 setMobileMenuOpen(false);
               }}
             >
